@@ -148,7 +148,7 @@ private final class HelperRequest {
         shim.beginExtensionRequest(withInputItems: [item]) { [weak self] uuid in
                 HuskLog.log(
                     "jit-helper",
-                    "beginExtensionRequest completion: uuid=\(String(describing: uuid)), operation=\(request.operation.rawValue)"
+                    "beginExtensionRequest completion: uuid=\(String(describing: uuid)), operation=\(operation)"
                 )
             
                 DispatchQueue.main.async {
@@ -179,17 +179,6 @@ private final class HelperRequest {
                     }
                 }
             }
-            DispatchQueue.main.async { MainActor.assumeIsolated {
-                guard let self else { return }
-                guard let uuid else {
-                    self.end(.failure(Self.error(7, "Husk's JIT helper did not start. Reinstall Husk, and "
-                                                  + "keep its app extensions if your sideloader asks.")))
-                    return
-                }
-                HuskLog.log("jit-helper", "\(self.operation): started \(identifier) as pid "
-                                        + "\(self.shim.pid(forRequestIdentifier: uuid))")
-                started()
-            } }
         }
     }
 
