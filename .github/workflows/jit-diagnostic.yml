@@ -19,6 +19,11 @@ jobs:
 
       - name: Show Xcode version
         run: xcodebuild -version
+      - name: Install Meson and Ninja
+        run: |
+          brew install meson ninja
+          meson --version
+          ninja --version
 
       - name: Build Husk
         run: |
