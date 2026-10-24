@@ -1,3 +1,4 @@
+
 #!/bin/bash
 # Husk: build everything from a clean checkout to the IPA, in order.
 #
@@ -7,13 +8,17 @@ set -euo pipefail
 HUSK_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${1:-$HUSK_ROOT/build/Husk.ipa}"
 cd "$HUSK_ROOT"
+
+step() { printf '\n\033[1;34m##### %s\033[0m\n' "$*"; }
+
+step "dependencies: libffi glib pixman libucontext libslirp"
+./scripts/build_ios.sh libffi glib pixman libucontext libslirp
+
 step "check Python YAML dependency"
 /opt/homebrew/bin/python3 -c "import yaml; print('PyYAML OK:', yaml.__version__)" 2>/dev/null || \
     /opt/homebrew/bin/python3 -m pip install PyYAML
 /opt/homebrew/bin/python3 -c "import yaml; print('PyYAML OK:', yaml.__version__)"
-step "install Python YAML dependency"
-/opt/homebrew/bin/python3 -m pip install PyYAML
-/opt/homebrew/bin/python3 -c "import yaml; print('PyYAML OK:', yaml.__version__)"
+
 # build_gpu_ios.sh asks for cross-ios-darwin.meson, which no script generates.
 # build_ios.sh writes cross-darwin.meson, the file it describes (host system
 # darwin, subsystem ios), under a different name.
