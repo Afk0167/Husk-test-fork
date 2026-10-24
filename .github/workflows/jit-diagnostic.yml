@@ -1,0 +1,40 @@
+
+name: Husk JIT Diagnostic Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build Husk IPA
+    runs-on: macos-15
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build Husk
+        run: |
+          chmod +x scripts/ci_build.sh
+          ./scripts/ci_build.sh
+
+      - name: Check IPA and Helper
+        run: |
+          test -f build/Husk.ipa
+          ls -lh build/Husk.ipa
+          unzip -l build/Husk.ipa | grep 'HuskJITHelper.appex'
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: Husk-JIT-Diagnostic
+          path: build/Husk.ipa
+          if-no-files-found: error
+          retention-days: 7
