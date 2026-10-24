@@ -24,7 +24,18 @@ jobs:
         run: |
           chmod +x scripts/ci_build.sh
           ./scripts/ci_build.sh
-
+      
+      - name: Show GLib failure log
+        if: failure()
+        run: |
+          if [ -f build/logs/glib-2.83.0.log ]; then
+            echo "===== GLib build log (last 200 lines) ====="
+            tail -n 200 build/logs/glib-2.83.0.log
+          else
+            echo "GLib log file not found"
+            find build -iname '*glib*log' -print
+          fi
+      
       - name: Check IPA and Helper
         run: |
           test -f build/Husk.ipa
