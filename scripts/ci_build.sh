@@ -16,6 +16,9 @@ step "fetch sources"
 step "dependencies: libffi glib pixman libucontext libslirp"
 ./scripts/build_ios.sh libffi glib pixman libucontext libslirp
 
+step "install Python YAML dependency"
+/opt/homebrew/bin/python3 -m pip install PyYAML
+/opt/homebrew/bin/python3 -c "import yaml; print('PyYAML OK:', yaml.__version__)"
 # build_gpu_ios.sh asks for cross-ios-darwin.meson, which no script generates.
 # build_ios.sh writes cross-darwin.meson, the file it describes (host system
 # darwin, subsystem ios), under a different name.
